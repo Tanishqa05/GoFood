@@ -1,22 +1,63 @@
-const express = require("express");;
+const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const { body, validationResult } = require("express-validator");
 
-router.post("/createuser", async(req, res) => {
-    try {
-     await User.create({
-            name: req.body.name,
-            password:  req.body.password,
-            email:  req.body.email ,
-            location:  req.body.location ,
-        })
+router.post(
+  "/createuser",
+  [
+    body("email").isEmail(),
+    body("password", "Recheck Password").isLength({ min: 5 }),
+    body("name").isLength({ min: 5 }),
+  ],
 
-      res.json({success: true});
-    } catch (error) {
-        console.log(error)
-        res.json({success: false});
-        
+  async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
     }
-});
+
+    try {
+      await User.create({
+        name: req.body.name,
+        password: req.body.password,
+        email: req.body.email,
+        location: req.body.location,
+      }).then(res.join({ success: true }));
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false });
+    }
+  }
+);
+router.post(
+  "/loginuser",
+  [
+    body("email").isEmail(),
+    body("password", "Recheck Password").isLength({ min: 5 }),
+  ],
+  async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    let email = req.body.email;
+    try {
+      let userData = await User.findOne({ email });
+
+      if (!userData) {
+        return res.status(400).json({ error: "Enter valid credentials" });
+      }
+      if (req.body.password !== userData.password) {
+        return res.status(400).json({ error: "Enter valid credentials" });
+      }
+
+      return res.json({ success: true });
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false });
+    }
+  }
+);
 
 module.exports = router;
