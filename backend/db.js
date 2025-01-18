@@ -1,21 +1,34 @@
-const mongoose = require('mongoose');
-const mongoURI = 'mongodb+srv://tani05bandi:tani5mongo@cluster-1.4fqi6.mongodb.net/firstdb?retryWrites=true&w=majority&appName=Cluster-1';
+const mongoose = require("mongoose");
+
+// Store MongoDB URI in an environment variable for security
+const mongoURI =
+  process.env.MONGO_URI ||
+  "mongodb+srv://tani05bandi:tani5mongo@cluster-1.4fqi6.mongodb.net/firstdb?retryWrites=true&w=majority&appName=Cluster-1";
 
 const mongoDB = async () => {
-    try {
-        await mongoose.connect(mongoURI);
-        console.log("Connected to MongoDB");
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB");
 
-        // Fetch the food_items collection
-        const fetched_data = mongoose.connection.db.collection("food_items");
+    // Fetch data from collections
+    const fetched_data = mongoose.connection.db.collection("food_items");
+    const food_items = await fetched_data.find({}).toArray();
 
-        // Use `await` with the MongoDB query
-        const data = await fetched_data.find({}).toArray();
-        // console.log(data);
+    const food_category = mongoose.connection.db.collection("food_category");
+    const food_categories = await food_category.find({}).toArray();
 
-    } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
-    }
+    // Store data in global variables
+    global.food_items = food_items;
+    global.food_category = food_categories;
+
+    console.log("Data fetched and stored in global variables");
+  } catch (err) {
+    console.error("Error connecting to MongoDB or fetching data:", err);
+  }
 };
 
 module.exports = mongoDB;
