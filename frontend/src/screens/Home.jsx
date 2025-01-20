@@ -6,7 +6,7 @@ import Card from "../components/Card";
 export default function Home() {
   const [foodItem, setFoodItem] = useState([]);
   const [foodCat, setFoodCat] = useState([]);
-  const [search, setSearch] = useState(' ');
+  const [search, setSearch] = useState('');
 
   const loadData = async () => {
     try {
@@ -91,12 +91,13 @@ export default function Home() {
                 .filter((item) => (item.CategoryName === data.CategoryName) && (item.name.toLowerCase().includes(search.toLocaleLowerCase()))) 
                 .map((filteredItem) => {
                   return (
+                    <div key={filteredItem._id} className="col-12 col-md-6 col-lg-3">  
                     <Card
-                      key={filteredItem._id}
-                      foodName={filteredItem.name}
+                      foodItems={filteredItem}
                       options={filteredItem.options[0]}
-                      foodImage={filteredItem.img}
+                  
                     />
+                    </div>
                   );
                 })
             ) : (
