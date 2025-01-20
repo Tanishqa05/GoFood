@@ -1,9 +1,14 @@
 import React from "react";
-import {Link} from 'react-router-dom';
-import Login from "../screens/Login";
-import SignUp from "../screens/SignUp";
+import {Link, useNavigate} from 'react-router-dom';
 
 export default function Navbar() {
+
+  const navigate = useNavigate();
+  const handleLogout= ()=>{
+    localStorage.removeItem("authToken");
+    navigate("/login")
+  }
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,38 +28,34 @@ export default function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav">
+            <ul className="navbar-nav me-auto">
               <li className="nav-item">
-                <Link className="nav-link " aria-current="page" to="#">
+                <Link className="nav-link active fs-5 " aria-current="page" to="#">
                   Home
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">
-                  Login
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/createuser">
-                  SignUp
-                </Link>
-              </li>
-              {/* <li className="nav-item">
-                <Link className="nav-link" to="#">
-                  Pricing
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className="nav-link disabled"
-                  to="#"
-                  tabindex="-1"
-                  aria-disabled="true"
-                >
-                  Disabled
-                </Link>
-              </li> */}
+              {(localStorage.getItem("authToken"))?
+              <div>
+                <Link className="nav-link active fs-5 " aria-current="page" to="#">
+                My Orders
+              </Link>
+              </div>
+              :""}
             </ul>
+
+              {(!localStorage.getItem("authToken"))?
+            <div className="d-flex">
+                  <Link className="btn bg-white text-black mx-1" to="/login">
+                    Login
+                  </Link>
+                  <Link className="btn bg-white text-black mx-1" to="/createuser">
+                    SignUp
+                  </Link>
+            </div>
+            :<div>
+              <div className="btn bg-white text-black mx-1">My Cart</div>
+            <div className="btn bg-white text-danger mx-1" onClick={handleLogout}>Logout</div>
+            </div>}
           </div>
         </div>
       </nav>
