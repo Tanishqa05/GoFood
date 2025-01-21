@@ -25,6 +25,7 @@ console.log(data);  }
 
 let finalPrice = qty * parseInt(options[size]);
 
+
 useEffect(() => {
   setSize(priceRef.current.value);
 }, [])
