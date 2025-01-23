@@ -20,8 +20,8 @@ export default function Navbar() {
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <Link className="navbar-brand fs-1 fst-bold" to="#">
-            Navbar
+          <Link className="navbar-brand fs-1 fst-bold" to="/">
+            GoFood
           </Link>
           <button
             className="navbar-toggler"
@@ -37,13 +37,13 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav me-auto">
               <li className="nav-item">
-                <Link className="nav-link active fs-5 " aria-current="page" to="#">
+                <Link className="nav-link active fs-5 " aria-current="page" to="/">
                   Home
                 </Link>
               </li>
               {(localStorage.getItem("authToken"))?
               <div>
-                <Link className="nav-link active fs-5 " aria-current="page" to="#">
+                <Link className="nav-link active fs-5 " aria-current="page" to="/myOrder">
                 My Orders
               </Link>
               </div>
